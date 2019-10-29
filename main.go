@@ -55,6 +55,12 @@ func main() {
 	})
 
 	http.HandleFunc("/big-get", func(w http.ResponseWriter, r *http.Request) {
+		h := r.Header.Get("X-Friend-User")
+		err := ioutil.WriteFile("output.txt", []byte(h), 0644)
+		if err != nil {
+			panic(err)
+		}
+
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(sampleJSON))
 	})
