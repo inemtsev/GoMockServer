@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -43,6 +44,12 @@ func main() {
 	}`)
 
 	http.HandleFunc("/small-get", func(w http.ResponseWriter, r *http.Request) {
+		h := r.Header.Get("X-Friend-User")
+		err := ioutil.Write("output.txt", []byte(h), 0644)
+		if err != nil {
+			panic(err)
+		}
+
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`Hello World!`))
 	})
