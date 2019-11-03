@@ -47,7 +47,7 @@ func main() {
 	}`)
 
 	http.HandleFunc("/small-get", func(w http.ResponseWriter, r *http.Request) {
-		h := r.Header.Get("X-Friend-User")
+		h := r.Header.Get("x-friend-user")
 		err := ioutil.WriteFile("output.txt", []byte(h), 0644)
 		if err != nil {
 			panic(err)
