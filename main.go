@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 )
 
 func main() {
@@ -55,14 +58,22 @@ func main() {
 	})
 
 	http.HandleFunc("/big-get", func(w http.ResponseWriter, r *http.Request) {
-		h := r.Header.Get("X-Friend-User")
-		if h == "" {
-			w.WriteHeader(http.StatusNoContent)
+		var rHeaders []string
+
+		for name, headers := range r.Header {
+			name = strings.ToLower(name)
+			for _, h := range headers {
+				rHeaders = append(rHeaders, fmt.Sprintf("%v: %v", name, h))
+			}
 		}
 
-		err := ioutil.WriteFile("output.txt", []byte(h), 0644)
-		if err != nil {
-			panic(err)
+		f, err := os.Create("test.txt")
+
+		for _, line := range rHeaders {
+			_, err = f.WriteString(line + "\n")
+			if err != nil {
+				panic(err)
+			}
 		}
 
 		w.WriteHeader(http.StatusOK)
